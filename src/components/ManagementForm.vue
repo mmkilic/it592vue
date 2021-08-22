@@ -15,7 +15,7 @@
         ></b-form-input>
       </b-form-group>
 
-      <b-button type="submit" block variant="primary">Save</b-button>
+      <b-button type="submit" block variant="primary">Create Project</b-button>
     </b-form>
   </div>
 </template>
