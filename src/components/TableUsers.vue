@@ -121,33 +121,15 @@
             <b-form-input type= "password" id="password-input" v-model="user.password"></b-form-input>
           </b-form-group>
           <b-form-group label="Department" label-for="department">
-            <select id="department" class="form-select" v-model="user.department">
-              <option
-              v-for="department in departments"
-              :key="department"
-              >{{department}}</option>
-            </select>
+            <b-form-select v-model="user.department" :options="departments"></b-form-select>
           </b-form-group>
           <b-form-group label="Role" label-for="role">
-            <select id="role" class="form-select" v-model="user.role">
-              <option
-              v-for="role in roles"
-              :key="role"
-              >{{role}}</option>
-            </select>
+            <b-form-select v-model="user.role" :options="roles"></b-form-select>
           </b-form-group>
           <b-form-group label="Manager" label-for="manager">
-            <select id="manager" class="form-select" v-model="managerId">
-              <option
-              :key=0
-              :value=0
-              >NONE</option>
-              <option
-              v-for="manager in managers"
-              :key="manager.id"
-              :value="manager.id"
-              >{{manager.fullName}}</option>
-            </select>
+            <b-form-select v-model="managerId" :options="managers" value-field="id" text-field="fullName">
+              <b-form-select-option value=0>NONE</b-form-select-option>
+            </b-form-select>
           </b-form-group>
         </form>
       </b-modal>
@@ -276,7 +258,7 @@ export default {
       managerId: 0,
       managers: [],
       departments: ["ENGINEERING","TENDERING","PROJECT", "OTHER"],
-      roles: ["DESIGNER","MANAGER","OTHER"],
+      roles: ["MECHANIC","ELECTRIC","MANAGER","OTHER"],
       userState: null
     };
   },
