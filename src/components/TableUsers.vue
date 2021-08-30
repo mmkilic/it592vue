@@ -47,12 +47,8 @@
         @filtered="onFiltered"
       >
         <template #cell(action)="row">
-          <b-button
-            size="sm"
-            @click="info(row.item, row.index, $event.target)"
-            class="mr-1"
-            >Edit</b-button
-          >
+          <b-icon icon="gear" scale="1.5" class="mr-2" @click="actionEdit(row.item, $event.target)"></b-icon>
+          <b-icon icon="trash" scale="1.5" class="ml-2" @click="actionDelete(row.item)"></b-icon>
         </template>
       </b-table>
 
@@ -141,7 +137,11 @@
             </select>
           </b-form-group>
           <b-form-group label="Manager" label-for="manager">
-            <select id="manager" class="form-select" v-model="user.manager.id">
+            <select id="manager" class="form-select" v-model="managerId">
+              <option
+              :key=0
+              :value=0
+              >NONE</option>
               <option
               v-for="manager in managers"
               :key="manager.id"
@@ -154,30 +154,66 @@
 
       <!-- Edit Modal -->
       <b-modal
-        :id="infoModal.id"
-        :title="infoModal.title"
-        ok-only
-        @hide="resetInfoModal"
+        id="modal-user-edit"
+        ref="modal"
+        title="Edit User"
+        @ok="okEdit"
       >
-        <b-form @submit="onFiltered">
+        <form ref="form" @submit.stop.prevent="handleSubmit">
           <b-form-group
-            id="input-group-1"
-            label-cols-lg="3"
-            label="Project number:"
-            label-for="input-1"
+            label="SESA"
+            label-for="sesa-input"
           >
             <b-form-input
-              id="number-1"
-              type="text"
+              id="sesa-input"
               v-model="user.sesa"
-              required
+              disabled
             ></b-form-input>
-            <pre>{{ users }}</pre>
           </b-form-group>
-
-          <b-button type="submit" block variant="primary">Update</b-button>
-        </b-form>
+          <b-form-group label="Name" label-for="name-input">
+            <b-form-input id="name-input" v-model="user.firstName"></b-form-input>
+          </b-form-group>
+          <b-form-group label="Surname" label-for="surname-input">
+            <b-form-input id="surname-input" v-model="user.lastName"></b-form-input>
+          </b-form-group>
+          <b-form-group label="E-mail" label-for="email-input" invalid-feedback="E-mail is invalid">
+            <b-form-input type= "email" id="email-input" :state="userState" v-model="user.email"></b-form-input>
+          </b-form-group>
+          <b-form-group label="Password" label-for="password-input">
+            <b-form-input type= "password" id="password-input" v-model="user.password"></b-form-input>
+          </b-form-group>
+          <b-form-group label="Department" label-for="department">
+            <select id="department" class="form-select" v-model="user.department">
+              <option
+              v-for="department in departments"
+              :key="department"
+              >{{department}}</option>
+            </select>
+          </b-form-group>
+          <b-form-group label="Role" label-for="role">
+            <select id="role" class="form-select" v-model="user.role">
+              <option
+              v-for="role in roles"
+              :key="role"
+              >{{role}}</option>
+            </select>
+          </b-form-group>
+          <b-form-group label="Manager" label-for="manager">
+            <select id="manager" class="form-select" v-model="managerId">
+              <option
+              :key=0
+              :value=0
+              >NONE</option>
+              <option
+              v-for="manager in managers"
+              :key="manager.id"
+              :value="manager.id"
+              >{{manager.fullName}}</option>
+            </select>
+          </b-form-group>
+        </form>
       </b-modal>
+
     </b-container>
   </div>
 </template>
@@ -196,22 +232,22 @@ export default {
         },
         {
           key: "sesa",
-          label: "Number",
+          label: "SESA",
           sortable: true,
         },
         {
           key: "firstName",
-          label: "ONAN",
+          label: "Name",
           sortable: true,
         },
         {
           key: "lastName",
-          label: "ONAF",
+          label: "Surname",
           sortable: true,
         },
         {
           key: "department",
-          label: "HV",
+          label: "Department",
           sortable: false,
         },
         {
@@ -235,21 +271,13 @@ export default {
         email: "",
         password: "",
         role: "",
-        department: "",
-        manager: {
-          id: 0,
-        },
+        department: ""
       },
+      managerId: 0,
       managers: [],
       departments: ["ENGINEERING","TENDERING","PROJECT", "OTHER"],
       roles: ["DESIGNER","MANAGER","OTHER"],
-      userState: null,
-
-      infoModal: {
-        id: "info-modal",
-        title: "",
-        content: "",
-      },
+      userState: null
     };
   },
   mounted() {
@@ -257,6 +285,11 @@ export default {
     this.totalRows = this.users.length;
   },
   methods: {
+    onFiltered(filteredItems) {
+      // Trigger pagination to update the number of buttons/pages due to filtering
+      this.totalRows = filteredItems.length;
+      this.currentPage = 1;
+    },
     checkFormValidity() {
       const valid = this.$refs.form.checkValidity();
       this.userState = valid;
@@ -272,10 +305,7 @@ export default {
         email: "",
         password: "",
         role: "",
-        department: "",
-        manager: {
-          id: 0,
-        },
+        department: ""
       };
       // Manager List
       await axios
@@ -286,7 +316,6 @@ export default {
         .catch((e) => {
           console.log(e);
         });
-        this.managers.push({id: 0, fullName: "NONE"})
     },
     async handleOk(bvModalEvt) {
       // Prevent modal from closing
@@ -297,6 +326,9 @@ export default {
       }
       // Backend connection
       let success = false;
+      if(this.managerId != 0){
+        this.user.manager = {id: this.managerId};
+      }
       await axios.post("http://localhost:8081/api/user", this.user)
       .then(response => {
         success = response.data;
@@ -318,21 +350,50 @@ export default {
         this.$bvModal.hide("modal-user-add");
       });
     },
-
-    info(item, index, button) {
-      this.infoModal.title = `Row index: ${index}`;
-      this.infoModal.content = JSON.stringify(item, null, 2);
-      this.$root.$emit("bv::show::modal", this.infoModal.id, button);
+    actionEdit(item, button) {
+      this.getManagers();
+      this.user = item;
+      if(this.user.manager != null){
+        this.managerId = this.user.manager.id;
+      }
+      this.$root.$emit("bv::show::modal", "modal-user-edit", button);
     },
-    resetInfoModal() {
-      this.infoModal.title = "";
-      this.infoModal.content = "";
+    async okEdit(bvModalEvt) {
+      if(this.user.manager != null){
+        this.user.manager.id = this.managerId;
+      }
+      // Backend connection
+      let success = false;
+      await axios.put("http://localhost:8081/api/user", this.user)
+      .then(response => {
+        success = response.data;
+      })
+      .catch(e =>{
+        success = false;
+        console.log(e);
+      });
+      if(success){
+        this.handleSubmit();
+      }
+      else{
+        alert("DB record was not completed properly!");
+      }
     },
-    onFiltered(filteredItems) {
-      // Trigger pagination to update the number of buttons/pages due to filtering
-      this.totalRows = filteredItems.length;
-      this.currentPage = 1;
-    },
+    async actionDelete(item){
+      await axios.delete(`http://localhost:8081/api/user/${item.id}`)
+      .then(response => {
+        if(response.data){
+          alert("User was deleted.");
+        }
+        else{
+          alert("User was not deleted!");
+        }
+      })
+      .catch(e =>{
+        console.log(e);
+        alert("User was not deleted!");
+      });
+    }
   },
 };
 </script>
