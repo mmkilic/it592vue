@@ -33,6 +33,8 @@
       <!-- Table -->
       <b-table
         striped
+        bordered
+        head-variant = "dark"
         hover
         small
         :items="users"
@@ -47,8 +49,8 @@
         @filtered="onFiltered"
       >
         <template #cell(action)="row">
-          <b-icon icon="gear" scale="1.5" class="mr-2" @click="actionEdit(row.item, $event.target)"></b-icon>
-          <b-icon icon="trash" scale="1.5" class="ml-2" @click="actionDelete(row.item)"></b-icon>
+          <b-icon icon="gear" scale="1.5" class="mx-1" @click="actionEdit(row.item, $event.target)"></b-icon>
+          <b-icon icon="trash" scale="1.5" class="mx-2" @click="actionDelete(row.item)"></b-icon>
         </template>
       </b-table>
 
@@ -91,8 +93,8 @@
         id="modal-user-add"
         ref="modal"
         title="Add New User"
-        @show="getManagers"
-        @ok="handleOk"
+        @show="showAddUser"
+        @ok="okAddUser"
       >
         <form ref="form" @submit.stop.prevent="handleSubmit">
           <b-form-group
@@ -255,6 +257,16 @@ export default {
         role: "",
         department: ""
       },
+      userEmpty: {
+        id: 0,
+        sesa: "",
+        firstName: "",
+        lastName: "",
+        email: "",
+        password: "",
+        role: "",
+        department: ""
+      },
       managerId: 0,
       managers: [],
       departments: ["ENGINEERING","TENDERING","PROJECT", "OTHER"],
@@ -277,18 +289,9 @@ export default {
       this.userState = valid;
       return valid;
     },
-    async getManagers() {
+    async showAddUser() {
       this.userState = null;
-      this.user = {
-        id: 0,
-        sesa: "",
-        firstName: "",
-        lastName: "",
-        email: "",
-        password: "",
-        role: "",
-        department: ""
-      };
+      this.user = JSON.parse(JSON.stringify(this.userEmpty));
       // Manager List
       await axios
         .get("http://localhost:8081/api/user/manager")
@@ -299,7 +302,7 @@ export default {
           console.log(e);
         });
     },
-    async handleOk(bvModalEvt) {
+    async okAddUser(bvModalEvt) {
       // Prevent modal from closing
       bvModalEvt.preventDefault();
       // Exit when the form isn't valid
@@ -320,20 +323,21 @@ export default {
         console.log(e);
       });
       if(success){
-        this.handleSubmit();
+        this.handleSubmit("modal-user-add");
       }
       else{
-        alert("DB record was not completed properly!");
+        alert("An error occurred while recording!");
       }
     },
-    handleSubmit() {
+    handleSubmit(modalName) {
       // Hide the modal manually
       this.$nextTick(() => {
-        this.$bvModal.hide("modal-user-add");
+        this.$bvModal.hide(modalName);
       });
+      this.$router.go('/');
     },
     actionEdit(item, button) {
-      this.getManagers();
+      this.showAddUser();
       this.user = item;
       if(this.user.manager != null){
         this.managerId = this.user.manager.id;
@@ -341,6 +345,8 @@ export default {
       this.$root.$emit("bv::show::modal", "modal-user-edit", button);
     },
     async okEdit(bvModalEvt) {
+      bvModalEvt.preventDefault();
+      
       if(this.user.manager != null){
         this.user.manager.id = this.managerId;
       }
@@ -355,10 +361,10 @@ export default {
         console.log(e);
       });
       if(success){
-        this.handleSubmit();
+        this.handleSubmit("modal-user-edit");
       }
       else{
-        alert("DB record was not completed properly!");
+        alert("An error occurred while recording!");
       }
     },
     async actionDelete(item){
@@ -375,6 +381,7 @@ export default {
         console.log(e);
         alert("User was not deleted!");
       });
+      this.$router.go('/');
     }
   },
 };
