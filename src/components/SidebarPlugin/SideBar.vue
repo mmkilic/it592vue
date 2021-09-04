@@ -43,7 +43,7 @@ export default {
   props: {
     title: {
       type: String,
-      default: "Project Follower"
+      default: "Schneider Electric"
     },
     backgroundColor: {
       type: String,

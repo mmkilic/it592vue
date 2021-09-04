@@ -11,7 +11,7 @@
           >
             <b-form-input
               id="input-1"
-              v-model="form.sesa"
+              v-model="sesa"
               placeholder="SESA100100"
               required
             ></b-form-input>
@@ -24,7 +24,7 @@
           >
             <b-form-input
               id="input-2"
-              v-model="form.password"
+              v-model="password"
               type="password"
               placeholder="Enter password"
               required
@@ -33,10 +33,6 @@
 
           <b-button type="submit" block variant="primary">Login</b-button>
         </b-form>
-
-        <b-card class="mt-3" header="Form Data Result" v-if="show">
-          <pre class="m-0">{{ user }}</pre>
-        </b-card>
       </div>
     </div>
   </div>
@@ -50,27 +46,22 @@ const userUrl = "http://localhost:8081/api/user";
 export default {
   data() {
     return {
-      form: {
-        sesa: "",
-        password: "",
-      },
-      user: {},
-      show: false,
+      sesa: "",
+      password: ""
     };
   },
   methods: {
     onSubmit(event) {
-      this.show = true;
+      event.preventDefault();
       axios
-        .get(userUrl + `/${this.form.sesa}/${this.form.password}`)
+        .get(userUrl + `/${this.sesa}/${this.password}`)
         .then((response) => {
-          this.user = response.data;
-          console.log(response.data);
+          localStorage.setItem('user', JSON.stringify(response.data));
+          this.$router.push({path: "/"});
         })
         .catch((e) => {
           console.log(e);
         });
-      event.preventDefault();
     },
   },
 };
