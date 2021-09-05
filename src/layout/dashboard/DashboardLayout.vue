@@ -3,8 +3,8 @@
     <side-bar>
       <template slot="links">
         <sidebar-link to="/dashboard" name="Dashboard" icon="ti-panel"/>
-        <sidebar-link to="/user" name="New User" icon="ti-user"/>
-        <sidebar-link to="/project" name="New Project" icon="ti-view-list-alt"/>
+        <sidebar-link v-if="manager" to="/user" name="New User" icon="ti-user"/>
+        <sidebar-link v-if="manager" to="/project" name="New Project" icon="ti-view-list-alt"/>
         <sidebar-link to="/designer" name="Designer" icon="ti-bell"/>
       </template>
     </side-bar>
@@ -26,6 +26,17 @@ export default {
     TopNavbar,
     ContentFooter,
     DashboardContent
+  },
+  data(){
+    return{
+      manager: false
+    };
+  },
+  created: function (){
+    const user = JSON.parse(localStorage.getItem('user'));
+    if(user.role === 'MANAGER') {
+      this.manager = true;
+    }
   },
   methods: {
     toggleSidebar() {

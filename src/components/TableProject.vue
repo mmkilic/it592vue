@@ -571,7 +571,7 @@ export default {
         invoiceDate: "",
         status: "NONE",
         createdDate: "",
-        creator: { id: 1 },
+        creator: {id: 0}
       },
       projectEmpty: {
         id: 0,
@@ -605,7 +605,7 @@ export default {
         invoiceDate: "",
         status: "NONE",
         createdDate: "",
-        creator: { id: 1 },
+        creator: {id: 0}
       },
       gaElectDesignerId: 0,
       gaMechDesignerId: 0,
@@ -627,6 +627,10 @@ export default {
   mounted() {
     // Set the initial number of items
     this.totalRows = this.projects.length;
+  },
+  created(){
+    const user = JSON.parse(localStorage.getItem('user'));
+    this.projectEmpty.creator.id = user.id;
   },
   methods: {
     onFiltered(filteredItems) {

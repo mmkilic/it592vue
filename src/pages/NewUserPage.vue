@@ -21,6 +21,10 @@ export default {
     };
   },
   created: async function () {
+    const user = JSON.parse(localStorage.getItem('user'));
+    if(user.role !== 'MANAGER'){
+      this.$router.push('dashboard');
+    } 
     await axios.get("http://localhost:8081/api/user")
     .then(response => {
       this.users = response.data;

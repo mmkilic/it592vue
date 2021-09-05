@@ -53,15 +53,14 @@ export default {
   methods: {
     onSubmit(event) {
       event.preventDefault();
-      axios
-        .get(userUrl + `/${this.sesa}/${this.password}`)
-        .then((response) => {
-          localStorage.setItem('user', JSON.stringify(response.data));
-          this.$router.push({path: "/"});
-        })
-        .catch((e) => {
-          console.log(e);
-        });
+      axios.get(userUrl + `/${this.sesa}/${this.password}`)
+      .then((response) => {
+        localStorage.setItem('user', JSON.stringify(response.data));
+        this.$router.push({path: "/"});
+      })
+      .catch((e) => {
+        console.log(e);
+      });
     },
   },
 };

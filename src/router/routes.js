@@ -7,6 +7,7 @@ import Login from "@/pages/LoginPage.vue";
 import Dashboard from "@/pages/Dashboard.vue";
 import NewUser from "@/pages/NewUserPage.vue";
 import NewProject from "@/pages/NewProjectPage.vue";
+import Designer from "@/pages/DesignerPage.vue";
 
 const routes = [
   {
@@ -33,6 +34,11 @@ const routes = [
         path: "project",
         name: "project",
         component: NewProject
+      },
+      {
+        path: "designer",
+        name: "designer",
+        component: Designer
       }
     ]
   },
