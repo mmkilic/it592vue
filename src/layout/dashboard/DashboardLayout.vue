@@ -5,7 +5,7 @@
         <sidebar-link to="/dashboard" name="Dashboard" icon="ti-panel"/>
         <sidebar-link v-if="manager" to="/user" name="New User" icon="ti-user"/>
         <sidebar-link v-if="manager" to="/project" name="New Project" icon="ti-view-list-alt"/>
-        <sidebar-link to="/designer" name="Designer" icon="ti-bell"/>
+        <sidebar-link v-if="noOther" to="/designer" name="Designer" icon="ti-bell"/>
       </template>
     </side-bar>
     <div class="main-panel">
@@ -29,13 +29,17 @@ export default {
   },
   data(){
     return{
-      manager: false
+      manager: false,
+      noOther: true
     };
   },
   created: function (){
     const user = JSON.parse(localStorage.getItem('user'));
     if(user.role === 'MANAGER') {
       this.manager = true;
+    }
+    if(user.role === 'OTHER') {
+      this.noOther = false;
     }
   },
   methods: {

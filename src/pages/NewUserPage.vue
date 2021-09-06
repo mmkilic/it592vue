@@ -16,7 +16,7 @@ export default {
   components: { TableUsers },
   data() {
     return {
-      users: {},
+      users: [],
       loading: true,
     };
   },

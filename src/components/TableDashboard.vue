@@ -283,7 +283,7 @@ export default {
       this.prjInfo.customer = item.projectInfo.customerName;
       this.prjInfo.productType = item.projectInfo.productType;
       this.prjInfo.industrialModel = item.projectInfo.industrialModel;
-      this.prjInfo.projectManger = item.projectInfo.projectManger.fullName;
+      this.prjInfo.projectManager = item.projectInfo.projectManger.fullName;
       this.prjInfo.creator = item.creator.fullName;
       this.prjInfo.createdDate = item.createdDate;
       this.prjInfo.gaElectPlan = item.gaElectPlan;

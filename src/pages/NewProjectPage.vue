@@ -16,7 +16,7 @@ export default {
   components: { TableProject },
   data() {
     return {
-      projects: {},
+      projects: [],
       loading: true,
     };
   },

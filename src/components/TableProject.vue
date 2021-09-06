@@ -222,9 +222,6 @@
               </b-col>
             </b-row>
           </b-form-group>
-          <b-form-group label="GA Deadline" label-cols="4" label-for="gaDeadlinePlan">
-            <b-form-input type="date" id="gaDeadlinePlan" v-model="project.gaDeadlinePlan"></b-form-input>
-          </b-form-group>
           <b-form-group label="BOM Electrical Plan" label-cols="4" label-for="gaElectPlan">
             <b-row>
               <b-col>
@@ -260,12 +257,6 @@
                   </b-form-select>
               </b-col>
             </b-row>
-          </b-form-group>
-          <b-form-group label="BOM Deadline" label-cols="4" label-for="bomDeadlinePlan">
-            <b-form-input type="date" id="bomDeadlinePlan" v-model="project.bomDeadlinePlan"></b-form-input>
-          </b-form-group>
-          <b-form-group label="Invoice Date" label-cols="4" label-for="invoiceDate">
-            <b-form-input type="date" id="invoiceDate" v-model="project.invoiceDate"></b-form-input>
           </b-form-group>
         </form>
       </b-modal>
@@ -399,9 +390,6 @@
               </b-col>
             </b-row>
           </b-form-group>
-          <b-form-group label="GA Deadline" label-cols="4" label-for="gaDeadlinePlan">
-            <b-form-input type="date" id="gaDeadlinePlan" v-model="project.gaDeadlinePlan"></b-form-input>
-          </b-form-group>
           <b-form-group label="BOM Electrical Plan" label-cols="4" label-for="gaElectPlan">
             <b-row>
               <b-col>
@@ -437,12 +425,6 @@
                   </b-form-select>
               </b-col>
             </b-row>
-          </b-form-group>
-          <b-form-group label="BOM Deadline" label-cols="4" label-for="bomDeadlinePlan">
-            <b-form-input type="date" id="bomDeadlinePlan" v-model="project.bomDeadlinePlan"></b-form-input>
-          </b-form-group>
-          <b-form-group label="Invoice Date" label-cols="4" label-for="invoiceDate">
-            <b-form-input type="date" id="invoiceDate" v-model="project.invoiceDate"></b-form-input>
           </b-form-group>
         </form>
       </b-modal>
@@ -560,16 +542,10 @@ export default {
         gaElectActual: "",
         gaMechPlan: "",
         gaElectActual: "",
-        gaDeadlinePlan: "",
-        gaDeadlineActual: "",
         bomElectPlan: "",
         bomElectActual: "",
         bomMechPlan: "",
         bomMechActual: "",
-        bomDeadlinePlan: "",
-        bomDeadlineActual: "",
-        invoiceDate: "",
-        status: "NONE",
         createdDate: "",
         creator: {id: 0}
       },
@@ -594,16 +570,10 @@ export default {
         gaElectActual: "",
         gaMechPlan: "",
         gaElectActual: "",
-        gaDeadlinePlan: "",
-        gaDeadlineActual: "",
         bomElectPlan: "",
         bomElectActual: "",
         bomMechPlan: "",
         bomMechActual: "",
-        bomDeadlinePlan: "",
-        bomDeadlineActual: "",
-        invoiceDate: "",
-        status: "NONE",
         createdDate: "",
         creator: {id: 0}
       },
@@ -651,30 +621,27 @@ export default {
       this.bomElectDesignerId= 0;
       this.bomMechDesignerId= 0;
       // user List
-      await axios
-        .get("http://localhost:8081/api/user/pm")
-        .then((response) => {
-          this.projectManagers = response.data;
-        })
-        .catch((e) => {
-          console.log(e);
-        });
-      await axios
-        .get("http://localhost:8081/api/user/electric")
-        .then((response) => {
-          this.electricalDesigners = response.data;
-        })
-        .catch((e) => {
-          console.log(e);
-        });
-      await axios
-        .get("http://localhost:8081/api/user/mechanic")
-        .then((response) => {
-          this.mechanicalDesigners = response.data;
-        })
-        .catch((e) => {
-          console.log(e);
-        });
+      await axios.get("http://localhost:8081/api/user/pm")
+      .then((response) => {
+        this.projectManagers = response.data;
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+      await axios.get("http://localhost:8081/api/user/electric")
+      .then((response) => {
+        this.electricalDesigners = response.data;
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+      await axios.get("http://localhost:8081/api/user/mechanic")
+      .then((response) => {
+        this.mechanicalDesigners = response.data;
+      })
+      .catch((e) => {
+        console.log(e);
+      });
     },
     async projectOk(bvModalEvt) {
       // Prevent modal from closing
@@ -689,6 +656,7 @@ export default {
       const day = date.getDate() >= 10 ? "" + date.getDate() : "0" + date.getDate();
       const nowDate = `${date.getFullYear()}-${month}-${day}`;
       this.project.createdDate = nowDate;
+
       if(this.gaElectDesignerId !== 0) this.project.gaElectDesigner = {id:this.gaElectDesignerId};
       if(this.gaMechDesignerId !== 0) this.project.gaMechDesigner = {id:this.gaMechDesignerId};
       if(this.bomElectDesignerId !== 0) this.project.bomElectDesigner = {id:this.bomElectDesignerId};
@@ -749,11 +717,11 @@ export default {
       let linkedPrjs = this.linkedProjects;
       for(let i = 0; i<linkedPrjs.length; i++){
         await axios.post("http://localhost:8081/api/nbr", linkedPrjs[i])
-          .then(response => {
+        .then(response => {
           success = response.data;
         })
-          .catch(e =>{
-            success = false;
+        .catch(e =>{
+          success = false;
           console.log(e);
         });
       }
@@ -817,7 +785,7 @@ export default {
       });
       this.$router.go('/');
     }
-  },
+  }
 };
 </script>
 
