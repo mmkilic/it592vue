@@ -1,24 +1,8 @@
 <template>
   <div>
-
-    <!--Stats cards-->
-    <div class="row">
-      <div class="col-md-6 col-xl-3" v-for="stats in statsCards" :key="stats.title">
-        <stats-card>
-          <div class="icon-big text-center" :class="`icon-${stats.type}`" slot="header">
-            <i :class="stats.icon"></i>
-          </div>
-          <div class="numbers" slot="content">
-            <p>{{stats.title}}</p>
-            {{stats.value}}
-          </div>
-          <div class="stats" slot="footer">
-            <i :class="stats.footerIcon"></i> {{stats.footerText}}
-          </div>
-        </stats-card>
-      </div>
-    </div>
-
+    <!--Report Cards-->
+    <dashboard-report></dashboard-report>
+    
     <!-- Table -->
     <div>
       <b-spinner class="align-middle" v-if="loading" />
@@ -28,14 +12,14 @@
   </div>
 </template>
 <script>
-import { StatsCard } from "@/components/index";
 import TableDashboard from '../components/TableDashboard.vue';
+import DashboardReport from '../components/DashboardReport.vue';
 import axios from "axios";
 
 export default {
   components: {
-    StatsCard,
-    TableDashboard
+    TableDashboard,
+    DashboardReport
   },
   data() {
     return {

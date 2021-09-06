@@ -25,10 +25,9 @@
 import axios from "axios";
 
 export default {
-  props: ["projects"],
+  props: ['user','projects'],
   data() {
     return {
-      user: {id:0},
       fields: [
         {
           key: "projectNumber.number",
@@ -61,8 +60,6 @@ export default {
     };
   },
   created(){
-    this.user = JSON.parse(localStorage.getItem('user'));
-
     if(this.user.role === 'ELECTRIC'){
       for(let i = 0; i<this.projects.length; i++){
         if(this.projects[i].gaElectDesigner.id === this.user.id){

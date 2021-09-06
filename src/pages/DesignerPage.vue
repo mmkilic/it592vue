@@ -1,45 +1,44 @@
 <template>
   <div>
-    <h3 class="m-1 pb-4">Designer Page - {{user.fullName}}</h3>
-      <designer-report></designer-report>
-      <div class="px-3 align-self-center">
-        <b-spinner class="align-middle" v-if="loading" />
-        <designer-task :projects="projects" v-else></designer-task>
-      </div>
+    <designer-report :user="user"></designer-report>
+    <div class="px-3 align-self-center">
+      <b-spinner class="align-middle" v-if="loading" />
+      <designer-task :user="user" :projects="projects" v-else></designer-task>
+    </div>
   </div>
 </template>
 
 <script>
-import DesignerTask from '../components/DesignerTask.vue';
-import DesignerReport from '../components/DesignerReport.vue';
+import DesignerTask from "../components/DesignerTask.vue";
+import DesignerReport from "../components/DesignerReport.vue";
 import axios from "axios";
 
 export default {
   components: { DesignerTask, DesignerReport },
   data() {
     return {
-      user: {id:0, fullName:""},
+      user: { id: 0, fullName: "" },
       loading: true,
-      projects: []
+      projects: [],
+      
     };
   },
   created: async function () {
-    this.user = JSON.parse(localStorage.getItem('user'));
+    this.user = JSON.parse(localStorage.getItem("user"));
 
-    await axios.get(`http://localhost:8081/api/prj/user/${this.user.id}`)
-    .then(response => {
-      this.projects = response.data;
-      this.loading = false;
-    })
-    .catch(e => {
-      console.log(e);
-      this.loading = true;
-    })
-
-  },
+    await axios
+      .get(`http://localhost:8081/api/prj/user/${this.user.id}`)
+      .then((response) => {
+        this.projects = response.data;
+        this.loading = false;
+      })
+      .catch((e) => {
+        console.log(e);
+        this.loading = true;
+      });
+  }
 };
 </script>
 
 <style>
-
 </style>

@@ -42,8 +42,8 @@
         <template #head()="data">
           <span style="font-size:16px">{{ data.label }}</span>
         </template>
-        <template #cell(action)="row">
-          <b-icon icon="plus-circle" scale="1.5" class="mx-1" @click="actionLink(row.item, $event.target)"></b-icon>
+        <template v-slot:[`cell(projectNumber.number)`]="row">
+          <a href="#" @click="actionLink(row.item, $event.target)">{{row.value}}</a>
         </template>
       </b-table>
 
@@ -81,11 +81,73 @@
         </b-col>
       </b-row>
 
+      <!-- Info Modal -->
+      <b-modal
+        id="modal-prj-info"
+        ref="modal"
+        title="Project Info"
+        size="xl"
+        ok-only
+        @ok="infoOk"
+      >
+        <b-row class="pb-2">
+          <b-col cols="2"><label>Project Number</label></b-col>
+          <b-col cols="2"><b-form-input v-model="prjInfo.number" disabled></b-form-input></b-col>
+          <b-col cols="2"><label>Related Projects</label></b-col>
+          <b-col><b-form-textarea rows="1" max-rows="2" v-model="prjInfo.relating" disabled></b-form-textarea></b-col>
+        </b-row>
+        <b-row class="pb-2">
+          <b-col cols="2"><label>Power (ONAN/ONAF)</label></b-col>
+          <b-col cols="2"><b-form-input v-model="prjInfo.power" disabled></b-form-input></b-col>
+          <b-col cols="2"><label>Voltage (HV/LV)</label></b-col>
+          <b-col cols="2"><b-form-input v-model="prjInfo.voltage" disabled></b-form-input></b-col>
+          <b-col cols="2"><label>Customer</label></b-col>
+          <b-col><b-form-input v-model="prjInfo.customer" disabled></b-form-input></b-col>
+        </b-row>
+        <b-row class="pb-2">
+          <b-col cols="2"><label>Product Type</label></b-col>
+          <b-col cols="2"><b-form-input v-model="prjInfo.productType" disabled></b-form-input></b-col>
+          <b-col cols="2"><label>Inductrial Model</label></b-col>
+          <b-col cols="2"><b-form-input v-model="prjInfo.industrialModel" disabled></b-form-input></b-col>
+          <b-col cols="2"><label>Project Manager</label></b-col>
+          <b-col><b-form-input v-model="prjInfo.projectManager" disabled></b-form-input></b-col>
+        </b-row>
+        <b-row class="pb-2">
+          <b-col cols="2"><label>Creator</label></b-col>
+          <b-col cols="6"><b-form-input type="date" v-model="prjInfo.createdDate" disabled></b-form-input></b-col>
+          <b-col><b-form-input v-model="prjInfo.creator" disabled></b-form-input></b-col>
+        </b-row>
+        <b-row class="pb-2">
+          <b-col cols="2"><label>GA Electrical</label></b-col>
+          <b-col cols="3"><b-form-input type="date" v-model="prjInfo.gaElectPlan" disabled  ></b-form-input></b-col>
+          <b-col cols="3"><b-form-input type="date" v-model="prjInfo.gaElectActual" disabled></b-form-input></b-col>
+          <b-col><b-form-input v-model="prjInfo.gaElectDesigner" disabled></b-form-input></b-col>
+        </b-row>
+        <b-row class="pb-2">
+          <b-col cols="2"><label>GA Mechanical</label></b-col>
+          <b-col cols="3"><b-form-input type="date" v-model="prjInfo.gaMechPlan" disabled></b-form-input></b-col>
+          <b-col cols="3"><b-form-input type="date" v-model="prjInfo.gaMechActual" disabled></b-form-input></b-col>
+          <b-col><b-form-input v-model="prjInfo.gaMechDesigner" disabled></b-form-input></b-col>
+        </b-row>
+        <b-row class="pb-2">
+          <b-col cols="2"><label>BoM Electrical</label></b-col>
+          <b-col cols="3"><b-form-input type="date" v-model="prjInfo.bomElectPlan" disabled></b-form-input></b-col>
+          <b-col cols="3"><b-form-input type="date" v-model="prjInfo.bomElectActual" disabled></b-form-input></b-col>
+          <b-col><b-form-input v-model="prjInfo.bomElectDesigner" disabled></b-form-input></b-col>
+        </b-row>
+        <b-row class="pb-2">
+          <b-col cols="2"><label>BoM Mechanical</label></b-col>
+          <b-col cols="3"><b-form-input type="date" v-model="prjInfo.bomMechPlan" disabled></b-form-input></b-col>
+          <b-col cols="3"><b-form-input type="date" v-model="prjInfo.bomMechActual" disabled></b-form-input></b-col>
+          <b-col><b-form-input v-model="prjInfo.bomMechDesigner" disabled></b-form-input></b-col>
+        </b-row>
+      </b-modal>
     </b-container>
   </div>
 </template>
 
 <script>
+import axios from 'axios';
 
 export default {
   props: ["projects"],
@@ -132,12 +194,12 @@ export default {
           sortable: true,
         },
         {
-          key: "gaDeadlinePlan",
+          key: "gaMechPlan",
           label: "GA-Deadline",
           sortable: true,
         },
         {
-          key: "bomDeadlinePlan",
+          key: "bomMechPlan",
           label: "BOM-Deadline",
           sortable: true,
         },
@@ -147,13 +209,13 @@ export default {
           sortable: false,
         },
         {
-          key: "gaSccore",
-          label: "GA-Sccore",
+          key: "expiryGa",
+          label: "Expiry-GA",
           sortable: false,
         },
         {
-          key: "bomSccore",
-          label: "BOM-Sccore",
+          key: "expiryBom",
+          label: "Expiry-BOM",
           sortable: false,
         }
       ],
@@ -162,7 +224,31 @@ export default {
       perPage: 10,
       pageOptions: [10, 50, 100],
       filter: null,
-      filterOn: []
+      filterOn: [],
+      prjInfo: {
+        number: "",
+        relating: [],
+        power: "",
+        voltage: "",
+        customer: "",
+        productType: "",
+        industrialModel: "",
+        projectManager: "",
+        creator: "",
+        createdDate: "",
+        gaElectPlan: "",
+        gaElectActual: "",
+        gaElectDesigner: "",
+        gaMechPlan: "",
+        gaMechActual: "",
+        gaMechDesigner: "",
+        bomElectPlan: "",
+        bomElectActual: "",
+        bomElectDesigner: "",
+        bomMechPlan: "",
+        bomMechActual: "",
+        bomMechDesigner: ""
+      }
     };
   },
   mounted() {
@@ -170,8 +256,19 @@ export default {
     this.totalRows = this.projects.length;
   },
   created(){
-    const user = JSON.parse(localStorage.getItem('user'));
-    this.projectEmpty.creator.id = user.id;
+    let prjs = this.projects;
+    for(let i=0; i<prjs.length; i++){
+      if(prjs[i].bomMechActual === null) {
+        prjs[i].status = 'ACTIVE';
+        if(prjs[i].gaMechActual !== null) prjs[i].expiryGa = (new Date(prjs[i].gaMechPlan) - new Date(prjs[i].gaMechActual)) / (24 * 60 * 60 *1000);
+      }
+      else{
+        if(new Date(prjs[i].gaMechPlan) >= new Date(prjs[i].gaMechActual)) prjs[i].status = 'ONTIME';
+        else prjs[i].status = 'DELAY';
+        prjs[i].expiryBom = (new Date(prjs[i].bomMechPlan) - new Date(prjs[i].bomMechActual)) / (24 * 60 * 60 *1000);
+        if(prjs[i].gaMechActual !== null) prjs[i].expiryGa = (new Date(prjs[i].gaMechPlan) - new Date(prjs[i].gaMechActual)) / (24 * 60 * 60 *1000);
+      }
+    }
   },
   methods: {
     onFiltered(filteredItems) {
@@ -179,13 +276,52 @@ export default {
       this.totalRows = filteredItems.length;
       this.currentPage = 1;
     },
-    checkFormValidity() {
-      this.prjNumberState = this.project.projectNumber.number > 100000 && this.project.projectNumber.number <= 999999;
-      this.prjManagerState = this.project.projectInfo.projectManger.id !== 0;
-      return this.prjNumberState && this.prjManagerState;
+    async actionLink(item, button){
+      this.prjInfo.number = item.projectNumber.number;
+      this.prjInfo.power = item.projectInfo.powerOnaf === 0 ? item.projectInfo.powerOnan : item.projectInfo.powerOnan +"-"+ item.projectInfo.powerOnaf;
+      this.prjInfo.voltage = item.projectInfo.highVoltage +"-"+ item.projectInfo.lowVoltage;
+      this.prjInfo.customer = item.projectInfo.customerName;
+      this.prjInfo.productType = item.projectInfo.productType;
+      this.prjInfo.industrialModel = item.projectInfo.industrialModel;
+      this.prjInfo.projectManger = item.projectInfo.projectManger.fullName;
+      this.prjInfo.creator = item.creator.fullName;
+      this.prjInfo.createdDate = item.createdDate;
+      this.prjInfo.gaElectPlan = item.gaElectPlan;
+      this.prjInfo.gaElectActual = item.gaElectActual;
+      this.prjInfo.gaElectDesigner = item.gaElectDesigner.fullName;
+      this.prjInfo.gaMechPlan = item.gaMechPlan;
+      this.prjInfo.gaMechActual = item.gaMechActual;
+      this.prjInfo.gaMechDesigner = item.gaMechDesigner.fullName;
+      this.prjInfo.bomElectPlan = item.bomElectPlan;
+      this.prjInfo.bomElectActual = item.bomElectActual;
+      this.prjInfo.bomElectDesigner = item.bomElectDesigner.fullName;
+      this.prjInfo.bomMechPlan = item.bomMechPlan;
+      this.prjInfo.bomMechActual = item.bomMechActual;
+      this.prjInfo.bomMechDesigner = item.bomMechDesigner.fullName;
+
+      await axios.get(`http://localhost:8081/api/nbr/sub/${item.projectNumber.id}`)
+      .then(response => {
+        response.data.forEach(element => {
+          this.prjInfo.relating.push(element.number);
+        });
+      })
+      .catch(e => {
+        console.log(e);
+      });
+
+      this.prjInfo.relating = this.prjInfo.relating.toString();
+
+      this.$root.$emit("bv::show::modal", "modal-prj-info", button);
+    },
+    infoOk(){
+
     }
-  },
+  }
 };
 </script>
 
-<style></style>
+<style scope>
+  b-form-input {
+    background-color: #DBF9FC;
+  }
+</style>
