@@ -65,6 +65,12 @@ export default {
     await axios.get("http://localhost:8081/api/prj")
     .then(response => {
       this.projects = response.data;
+      this.projects.forEach(prj => {
+        axios.get(`http://localhost:8081/api/nbr/sub/${prj.projectNumber.id}`)
+        .then(response => {
+          prj.projectNumber.subProjects = response.data;
+        })
+      });
       this.loading = false;
     })
     .catch(e => {

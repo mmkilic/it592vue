@@ -155,7 +155,6 @@
 </template>
 
 <script>
-import axios from 'axios';
 
 export default {
   props: ["projects"],
@@ -292,32 +291,30 @@ export default {
       this.prjInfo.productType = item.projectInfo.productType;
       this.prjInfo.industrialModel = item.projectInfo.industrialModel;
       this.prjInfo.projectManager = item.projectInfo.projectManger.fullName;
-      this.prjInfo.creator = item.creator.fullName;
+      this.prjInfo.creator = item.creator == null ? "-" : item.creator.fullName;
       this.prjInfo.createdDate = item.createdDate;
       this.prjInfo.gaElectPlan = item.gaElectPlan;
       this.prjInfo.gaElectActual = item.gaElectActual;
-      this.prjInfo.gaElectDesigner = item.gaElectDesigner.fullName;
+      this.prjInfo.gaElectDesigner = item.gaElectDesigner == null ? "-" : item.gaElectDesigner.fullName;
       this.prjInfo.gaMechPlan = item.gaMechPlan;
       this.prjInfo.gaMechActual = item.gaMechActual;
-      this.prjInfo.gaMechDesigner = item.gaMechDesigner.fullName;
+      this.prjInfo.gaMechDesigner = item.gaMechDesigner == null ? "-" : item.gaMechDesigner.fullName;
       this.prjInfo.bomElectPlan = item.bomElectPlan;
       this.prjInfo.bomElectActual = item.bomElectActual;
-      this.prjInfo.bomElectDesigner = item.bomElectDesigner.fullName;
+      this.prjInfo.bomElectDesigner = item.bomElectDesigner == null ? "-" : item.bomElectDesigner.fullName;
       this.prjInfo.bomMechPlan = item.bomMechPlan;
       this.prjInfo.bomMechActual = item.bomMechActual;
-      this.prjInfo.bomMechDesigner = item.bomMechDesigner.fullName;
+      this.prjInfo.bomMechDesigner = item.bomMechDesigner == null ? "-" : item.bomMechDesigner.fullName;
+      this.prjInfo.relating = [];
 
-      await axios.get(`http://localhost:8081/api/nbr/sub/${item.projectNumber.id}`)
-      .then(response => {
-        response.data.forEach(element => {
-          this.prjInfo.relating.push(element.number);
-        });
-      })
-      .catch(e => {
-        console.log(e);
+      item.projectNumber.subProjects.forEach(element => {
+        this.prjInfo.relating.push(element.number);
       });
-
-      this.prjInfo.relating = this.prjInfo.relating.toString();
+      
+      if(this.prjInfo.relating.length === 0)
+        this.prjInfo.relating = "-";
+      else
+        this.prjInfo.relating = this.prjInfo.relating.toString();
 
       this.$root.$emit("bv::show::modal", "modal-prj-info", button);
     },
