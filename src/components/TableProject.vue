@@ -704,7 +704,7 @@ export default {
 
       // Backend connection
       let success = false;
-      /*
+
       await axios.post("http://localhost:8081/api/nbrs", this.linkedProjects)
         .then(response => {
         success = response.data;
@@ -713,7 +713,8 @@ export default {
           success = false;
         console.log(e);
       });
-      */
+ 
+     /*
       let linkedPrjs = this.linkedProjects;
       for(let i = 0; i<linkedPrjs.length; i++){
         await axios.post("http://localhost:8081/api/nbr", linkedPrjs[i])
@@ -725,6 +726,7 @@ export default {
           console.log(e);
         });
       }
+      */
       if(success){
         this.handleSubmit("modal-prj-link");
       }
