@@ -116,17 +116,17 @@
           <b-form-group label="Surname" label-for="surname-input">
             <b-form-input id="surname-input" v-model="user.lastName"></b-form-input>
           </b-form-group>
-          <b-form-group label="E-mail" label-for="email-input" invalid-feedback="E-mail is invalid">
-            <b-form-input type= "email" id="email-input" :state="userState" v-model="user.email"></b-form-input>
+          <b-form-group label="E-mail" label-for="email-input" invalid-feedback="E-mail is invalid" :state="mailState">
+            <b-form-input type= "email" id="email-input" v-model="user.email" :state="mailState" required></b-form-input>
           </b-form-group>
           <b-form-group label="Password" label-for="password-input">
             <b-form-input type= "password" id="password-input" v-model="user.password"></b-form-input>
           </b-form-group>
-          <b-form-group label="Department" label-for="department">
-            <b-form-select v-model="user.department" :options="departments"></b-form-select>
+          <b-form-group label="Department" label-for="department" :state="departmentState">
+            <b-form-select v-model="user.department" :options="departments" :state="departmentState" required></b-form-select>
           </b-form-group>
-          <b-form-group label="Role" label-for="role">
-            <b-form-select v-model="user.role" :options="roles"></b-form-select>
+          <b-form-group label="Role" label-for="role" :state="roleState">
+            <b-form-select v-model="user.role" :options="roles" :state="roleState" required></b-form-select>
           </b-form-group>
           <b-form-group label="Manager" label-for="manager">
             <b-form-select v-model="managerId" :options="managers" value-field="id" text-field="fullName">
@@ -271,7 +271,10 @@ export default {
       managers: [],
       departments: ["ENGINEERING","TENDERING","PROJECT", "OTHER"],
       roles: ["MECHANIC","ELECTRIC","MANAGER","OTHER"],
-      userState: null
+      userState: null,
+      mailState: null,
+      departmentState: null,
+      roleState: null
     };
   },
   mounted() {
@@ -285,12 +288,17 @@ export default {
       this.currentPage = 1;
     },
     checkFormValidity() {
-      const valid = this.$refs.form.checkValidity();
-      this.userState = valid;
-      return valid;
+      this.userState = this.$refs.form.checkValidity();
+      this.mailState = this.$refs.form[3].checkValidity();
+      this.departmentState = this.user.department !== "";
+      this.roleState = this.user.role !== "";
+      return this.userState && this.mailState && this.departmentState && this.roleState;
     },
     async showAddUser() {
       this.userState = null;
+      this.mailState = null,
+      this.departmentState = null,
+      this.roleState = null
       this.user = JSON.parse(JSON.stringify(this.userEmpty));
       // Manager List
       await axios
