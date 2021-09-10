@@ -91,55 +91,63 @@
         @ok="infoOk"
       >
         <b-row class="pb-2">
-          <b-col cols="2"><label>Project Number</label></b-col>
-          <b-col cols="2"><b-form-input v-model="prjInfo.number" disabled></b-form-input></b-col>
-          <b-col cols="2"><label>Related Projects</label></b-col>
-          <b-col><b-form-textarea rows="1" max-rows="2" v-model="prjInfo.relating" disabled></b-form-textarea></b-col>
+          <b-col cols="2"><label>Project Number:</label></b-col>
+          <b-col cols="2"><span>{{prjInfo.number}}</span></b-col>
+          <b-col cols="2"><label>Related Projects:</label></b-col>
+          <b-col><span>{{prjInfo.relating}}</span></b-col>
         </b-row>
         <b-row class="pb-2">
-          <b-col cols="2"><label>Power (ONAN/ONAF)</label></b-col>
-          <b-col cols="2"><b-form-input v-model="prjInfo.power" disabled></b-form-input></b-col>
-          <b-col cols="2"><label>Voltage (HV/LV)</label></b-col>
-          <b-col cols="2"><b-form-input v-model="prjInfo.voltage" disabled></b-form-input></b-col>
-          <b-col cols="2"><label>Customer</label></b-col>
-          <b-col><b-form-input v-model="prjInfo.customer" disabled></b-form-input></b-col>
+          <b-col cols="2"><label>Power (ONAN/ONAF):</label></b-col>
+          <b-col cols="2"><span>{{prjInfo.power}} kVA</span></b-col>
+          <b-col cols="2"><label>Voltage (HV/LV):</label></b-col>
+          <b-col cols="2"><span>{{prjInfo.voltage}} V</span></b-col>
+          <b-col cols="2"><label>Customer:</label></b-col>
+          <b-col><span>{{prjInfo.customer}}</span></b-col>
         </b-row>
         <b-row class="pb-2">
-          <b-col cols="2"><label>Product Type</label></b-col>
-          <b-col cols="2"><b-form-input v-model="prjInfo.productType" disabled></b-form-input></b-col>
-          <b-col cols="2"><label>Inductrial Model</label></b-col>
-          <b-col cols="2"><b-form-input v-model="prjInfo.industrialModel" disabled></b-form-input></b-col>
-          <b-col cols="2"><label>Project Manager</label></b-col>
-          <b-col><b-form-input v-model="prjInfo.projectManager" disabled></b-form-input></b-col>
+          <b-col cols="2"><label>Product Type:</label></b-col>
+          <b-col cols="2"><span>{{prjInfo.productType}}</span></b-col>
+          <b-col cols="2"><label>Inductrial Model:</label></b-col>
+          <b-col cols="2"><span>{{prjInfo.industrialModel}}</span></b-col>
+          <b-col cols="2"><label>Project Manager:</label></b-col>
+          <b-col><span>{{prjInfo.projectManager}}</span></b-col>
         </b-row>
         <b-row class="pb-2">
-          <b-col cols="2"><label>Creator</label></b-col>
-          <b-col cols="6"><b-form-input type="date" v-model="prjInfo.createdDate" disabled></b-form-input></b-col>
-          <b-col><b-form-input v-model="prjInfo.creator" disabled></b-form-input></b-col>
+          <b-col cols="2"><label>Creator:</label></b-col>
+          <b-col cols="3"><div class="p-1 border bg-light text-center">{{prjInfo.creator}}</div></b-col>
+          <b-col><div class="p-1 border bg-light text-center">{{prjInfo.createdDate}}</div></b-col>
         </b-row>
         <b-row class="pb-2">
-          <b-col cols="2"><label>GA Electrical</label></b-col>
-          <b-col cols="3"><b-form-input type="date" v-model="prjInfo.gaElectPlan" disabled  ></b-form-input></b-col>
-          <b-col cols="3"><b-form-input type="date" v-model="prjInfo.gaElectActual" disabled></b-form-input></b-col>
-          <b-col><b-form-input v-model="prjInfo.gaElectDesigner" disabled></b-form-input></b-col>
+          <b-col cols="2"><label>GA Electrical:</label></b-col>
+          <b-col cols="3"><div class="p-1 border bg-light text-center">{{prjInfo.gaElectDesigner}}</div></b-col>
+          <b-col cols="3"><div id="gaep" class="p-1 border bg-info text-light text-center">{{prjInfo.gaElectPlan}}</div></b-col>
+          <b-tooltip target="gaep" title="Plan Date"></b-tooltip>
+          <b-col><div id="gaea" class="p-1 border bg-success text-light text-center">{{prjInfo.gaElectActual}}</div></b-col>
+          <b-tooltip target="gaea" title="Actual Date"></b-tooltip>
         </b-row>
         <b-row class="pb-2">
-          <b-col cols="2"><label>GA Mechanical</label></b-col>
-          <b-col cols="3"><b-form-input type="date" v-model="prjInfo.gaMechPlan" disabled></b-form-input></b-col>
-          <b-col cols="3"><b-form-input type="date" v-model="prjInfo.gaMechActual" disabled></b-form-input></b-col>
-          <b-col><b-form-input v-model="prjInfo.gaMechDesigner" disabled></b-form-input></b-col>
+          <b-col cols="2"><label>GA Mechanical:</label></b-col>
+          <b-col cols="3"><div class="p-1 border bg-light text-center">{{prjInfo.gaMechDesigner}}</div></b-col>
+          <b-col cols="3"><div id="gamp" class="p-1 border bg-info text-light text-center">{{prjInfo.gaMechPlan}}</div></b-col>
+          <b-tooltip target="gamp" title="Plan Date"></b-tooltip>
+          <b-col><div id="gama" class="p-1 border bg-success text-light text-center">{{prjInfo.gaMechActual}}</div></b-col>
+          <b-tooltip target="gama" title="Actual Date"></b-tooltip>
         </b-row>
         <b-row class="pb-2">
           <b-col cols="2"><label>BoM Electrical</label></b-col>
-          <b-col cols="3"><b-form-input type="date" v-model="prjInfo.bomElectPlan" disabled></b-form-input></b-col>
-          <b-col cols="3"><b-form-input type="date" v-model="prjInfo.bomElectActual" disabled></b-form-input></b-col>
-          <b-col><b-form-input v-model="prjInfo.bomElectDesigner" disabled></b-form-input></b-col>
+          <b-col cols="3"><div class="p-1 border bg-light text-center">{{prjInfo.bomElectDesigner}}</div></b-col>
+          <b-col cols="3"><div id="bomep" class="p-1 border bg-info text-light text-center">{{prjInfo.bomElectPlan}}</div></b-col>
+          <b-tooltip target="bomep" title="Plan Date"></b-tooltip>
+          <b-col><div id="bomea" class="p-1 border bg-success text-light text-center">{{prjInfo.bomElectActual}}</div></b-col>
+          <b-tooltip target="bomea" title="Actual Date"></b-tooltip>
         </b-row>
         <b-row class="pb-2">
           <b-col cols="2"><label>BoM Mechanical</label></b-col>
-          <b-col cols="3"><b-form-input type="date" v-model="prjInfo.bomMechPlan" disabled></b-form-input></b-col>
-          <b-col cols="3"><b-form-input type="date" v-model="prjInfo.bomMechActual" disabled></b-form-input></b-col>
-          <b-col><b-form-input v-model="prjInfo.bomMechDesigner" disabled></b-form-input></b-col>
+          <b-col cols="3"><div class="p-1 border bg-light text-center">{{prjInfo.bomMechDesigner}}</div></b-col>
+          <b-col cols="3"><div id="bommp" class="p-1 border bg-info text-light text-center">{{prjInfo.bomMechPlan}}</div></b-col>
+          <b-tooltip target="bommp" title="Plan Date"></b-tooltip>
+          <b-col><div id="bomma" class="p-1 border bg-success text-light text-center">{{prjInfo.bomMechActual}}</div></b-col>
+          <b-tooltip target="bomma" title="Actual Date"></b-tooltip>
         </b-row>
       </b-modal>
     </b-container>
