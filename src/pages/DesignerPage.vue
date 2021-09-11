@@ -25,7 +25,6 @@ export default {
   },
   created: async function () {
     this.user = JSON.parse(localStorage.getItem("user"));
-
     await axios
       .get(`http://localhost:8081/api/prj/user/${this.user.id}`)
       .then((response) => {

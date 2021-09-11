@@ -60,12 +60,15 @@ export default {
     };
   },
   created(){
+
     if(this.user.role === 'ELECTRIC'){
+      
       for(let i = 0; i<this.projects.length; i++){
-        if(this.projects[i].gaElectDesigner.id === this.user.id){
+        if(this.projects[i].gaElectDesigner !== null && this.projects[i].gaElectDesigner.id === this.user.id){
           if(this.projects[i].gaElectActual === null) this.gaProjects.push(this.projects[i]);
         }
-        if(this.projects[i].bomElectDesigner.id === this.user.id ){
+        
+        if(this.projects[i].bomElectDesigner !== null && this.projects[i].bomElectDesigner.id === this.user.id ){
           if(this.projects[i].bomElectActual === null) this.bomProjects.push(this.projects[i]);
         }
       }
@@ -73,10 +76,10 @@ export default {
 
     if(this.user.role === 'MECHANIC'){
       for(let i = 0; i<this.projects.length; i++){
-        if(this.projects[i].gaMechDesigner.id === this.user.id ){
+        if(this.projects[i].gaMechDesigner !== null && this.projects[i].gaMechDesigner.id === this.user.id ){
           if(this.projects[i].gaMechActual === null) this.gaProjects.push(this.projects[i]);
         }
-        if(this.projects[i].bomMechDesigner.id === this.user.id ){
+        if(this.projects[i].bomMechDesigner !== null && this.projects[i].bomMechDesigner.id === this.user.id ){
           if(this.projects[i].bomMechActual === null) this.bomProjects.push(this.projects[i]);
         }
       }

@@ -111,7 +111,7 @@ export default {
       let ongoingCount = 0;
       if (this.user.role === "ELECTRIC") {
         for (let i = 0; i < prjs.length; ++i) {
-          if (this.user.id === prjs[i].gaElectDesigner.id) {
+          if (prjs[i].gaElectDesigner !== null && this.user.id === prjs[i].gaElectDesigner.id) {
             taskCount += 1;
             if (prjs[i].gaElectActual === null) {
               ongoingCount += 1;
@@ -120,7 +120,7 @@ export default {
               else lateCount += 1;
             }
           }
-          if (this.user.id === prjs[i].bomElectDesigner.id) {
+          if (prjs[i].bomElectDesigner !== null && this.user.id === prjs[i].bomElectDesigner.id) {
             taskCount += 1;
             if (prjs[i].bomElectActual === null) {
               ongoingCount += 1;
@@ -134,7 +134,7 @@ export default {
 
       if (this.user.role === "MECHANIC") {
         for (let i = 0; i < prjs.length; ++i) {
-          if (this.user.id === prjs[i].gaMechDesigner.id) {
+          if (prjs[i].gaMechDesigner !== null && this.user.id === prjs[i].gaMechDesigner.id) {
             taskCount += 1;
             if (prjs[i].gaMechActual === null) {
               ongoingCount += 1;
@@ -143,7 +143,7 @@ export default {
               else lateCount += 1;
             }
           }
-          if (this.user.id === prjs[i].bomMechDesigner.id) {
+          if (prjs[i].bomMechDesigner !== null && this.user.id === prjs[i].bomMechDesigner.id) {
             taskCount += 1;
             if (prjs[i].bomMechActual === null) {
               ongoingCount += 1;
